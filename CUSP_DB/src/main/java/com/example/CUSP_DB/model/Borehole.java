@@ -10,9 +10,6 @@ import java.util.PrimitiveIterator;
 @Table(name="Borehole")
 public class Borehole {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
     @Column(name="API")
     private Long API;
 
@@ -185,16 +182,20 @@ public class Borehole {
     @Override
     public String toString(){
         String str="";
-        str += "API: "+getAPI()+" id:" + getId();
+        str += "WellName: "+getWellName()+" API:" + getAPI();
         return str;
     }
 
     public Borehole() {
     }
 
-    public Borehole(Long id, Long API) {
-        this.id = id;
+    public Borehole(Long API,String wellName) {
+        this.WellName=wellName;
         this.API = API;
+    }
+
+    public Borehole(String wellName) {
+        WellName = wellName;
     }
 
     /*public Borehole(Long API, String wellName, String operator, Long operatorNo, String fieldName, Long groundElev, Long kellyElev, Long drkFloorElev, Float latitude, Float longitude, Long coordsSurfN, Long coordsSurfE, int UTM, Long footageNS, String dirNS, Long footageEW, String dirEW, String qtrQtr, int section, int township, Character townshipDir, int range, Character rangeDir, Character meridian, String county, Character dirHoriz, Character dirVert, Character dirDirect, String surfaceOwner, String indianTribe, String confidential, Date confRelDate, String leaseNumber, String leaseType, Date abandonDate, Character wellStatus, String wellType, Long totCumOil, Long totCumGas, Long totCumWater, Long multiLats, String origianlField, String unitName, String GISStatusType, Date origComplDate, String jurisdiction, Long TDSNavajo, Long TDSWingate, Long reportsID, Long formationTopDepths, Long thickness, String netSand, String netPay, String extent) {
@@ -253,10 +254,6 @@ public class Borehole {
         NetPay = netPay;
         Extent = extent;
     }*/
-
-    public Long getId() {
-        return id;
-    }
 
     public Long getAPI() {
         return this.API;

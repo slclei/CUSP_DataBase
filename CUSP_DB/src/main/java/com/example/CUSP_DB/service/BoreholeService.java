@@ -20,7 +20,7 @@ public class BoreholeService {
     }
 
     public Borehole addBorehole(Borehole borehole){
-        if (borehole.getAPI()==null){
+        if (borehole.getWellName() ==null){
             throw new BoreholeEmptyNameException("Empty API.");
         }
 
