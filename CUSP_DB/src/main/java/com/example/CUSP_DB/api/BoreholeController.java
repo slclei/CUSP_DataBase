@@ -3,11 +3,14 @@ package com.example.CUSP_DB.api;
 import com.example.CUSP_DB.exceptions.BoreholeEmptyNameException;
 import com.example.CUSP_DB.model.Borehole;
 import com.example.CUSP_DB.service.BoreholeService;
+import com.example.CUSP_DB.service.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.util.List;
 
@@ -16,10 +19,12 @@ import java.util.List;
 public class BoreholeController {
 
     private BoreholeService boreholeService;
+    private ExcelService excelService;
 
     @Autowired
-    public BoreholeController(BoreholeService boreholeService) {
+    public BoreholeController(BoreholeService boreholeService, ExcelService excelService) {
         this.boreholeService = boreholeService;
+        this.excelService=excelService;
     }
 
     @GetMapping
@@ -37,4 +42,17 @@ public class BoreholeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @RequestMapping("/upload")
+    @PostMapping()
+    public ResponseEntity<String> uploadBorehole(@RequestParam("file") MultipartFile file){
+        try{
+            excelService.saveAll(file);
+            return ResponseEntity.status(HttpStatus.OK).body("upload file successfully: "+file.getOriginalFilename());
+        }  catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("upload file failed: "+file.getOriginalFilename()+", "+e.getMessage());
+        }
+    }
+
+
 }

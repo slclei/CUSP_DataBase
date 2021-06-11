@@ -15,7 +15,7 @@ public class Borehole {
 
     @Column(name="WellName")
     private String WellName;
-/*
+
     @Column(name="Operator")
     private String Operator;
 
@@ -48,7 +48,7 @@ public class Borehole {
     private Long CoordsSurfE;
 
     @Column(name="UTMZone")
-    private int UTM;
+    private Integer UTM;
 
     @Column(name="FootageNS")
     private Long FootageNS;
@@ -66,16 +66,16 @@ public class Borehole {
     private String QtrQtr;
 
     @Column(name="Section")
-    private int Section;
+    private Integer Section;
 
     @Column(name="Township")
-    private int Township;
+    private Integer Township;
 
     @Column(name="TownshipDirection")
     private Character TownshipDir;
 
-    @Column(name="Range")
-    private int Range;
+    @Column(name="RangeCOl")
+    private Integer Range;
 
     @Column(name="RangeDirection")
     private Character RangeDir;
@@ -178,7 +178,7 @@ public class Borehole {
 
     @Column(name="Extent")
     private String Extent;
-*/
+
     @Override
     public String toString(){
         String str="";
@@ -198,7 +198,7 @@ public class Borehole {
         WellName = wellName;
     }
 
-    /*public Borehole(Long API, String wellName, String operator, Long operatorNo, String fieldName, Long groundElev, Long kellyElev, Long drkFloorElev, Float latitude, Float longitude, Long coordsSurfN, Long coordsSurfE, int UTM, Long footageNS, String dirNS, Long footageEW, String dirEW, String qtrQtr, int section, int township, Character townshipDir, int range, Character rangeDir, Character meridian, String county, Character dirHoriz, Character dirVert, Character dirDirect, String surfaceOwner, String indianTribe, String confidential, Date confRelDate, String leaseNumber, String leaseType, Date abandonDate, Character wellStatus, String wellType, Long totCumOil, Long totCumGas, Long totCumWater, Long multiLats, String origianlField, String unitName, String GISStatusType, Date origComplDate, String jurisdiction, Long TDSNavajo, Long TDSWingate, Long reportsID, Long formationTopDepths, Long thickness, String netSand, String netPay, String extent) {
+    public Borehole(Long API, String wellName, String operator, Long operatorNo, String fieldName, Long groundElev, Long kellyElev, Long drkFloorElev, Float latitude, Float longitude, Long coordsSurfN, Long coordsSurfE, Integer UTM, Long footageNS, String dirNS, Long footageEW, String dirEW, String qtrQtr, Integer section, Integer township, Character townshipDir, Integer range, Character rangeDir, Character meridian, String county, Character dirHoriz, Character dirVert, Character dirDirect, String surfaceOwner, String indianTribe, String confidential, Date confRelDate, String leaseNumber, String leaseType, Date abandonDate, Character wellStatus, String wellType, Long totCumOil, Long totCumGas, Long totCumWater, Long multiLats, String origianlField, String unitName, String GISStatusType, Date origComplDate, String jurisdiction, Long TDSNavajo, Long TDSWingate, Long reportsID, Long formationTopDepths, Long thickness, String netSand, String netPay, String extent) {
         this.API = API;
         WellName = wellName;
         Operator = operator;
@@ -253,7 +253,7 @@ public class Borehole {
         NetSand = netSand;
         NetPay = netPay;
         Extent = extent;
-    }*/
+    }
 
     public Long getAPI() {
         return this.API;
@@ -270,7 +270,7 @@ public class Borehole {
     public void setWellName(String wellName) {
         WellName = wellName;
     }
-    /*
+
     public String getOperator() {
         return Operator;
     }
@@ -311,7 +311,7 @@ public class Borehole {
         return CoordsSurfE;
     }
 
-    public int getUTM() {
+    public Integer getUTM() {
         return UTM;
     }
 
@@ -335,11 +335,11 @@ public class Borehole {
         return QtrQtr;
     }
 
-    public int getSection() {
+    public Integer getSection() {
         return Section;
     }
 
-    public int getTownship() {
+    public Integer getTownship() {
         return Township;
     }
 
@@ -347,7 +347,7 @@ public class Borehole {
         return TownshipDir;
     }
 
-    public int getRange() {
+    public Integer getRange() {
         return Range;
     }
 
@@ -479,14 +479,6 @@ public class Borehole {
         return Extent;
     }
 
-    public void setAPI(Long API) {
-        this.API = API;
-    }
-
-    public void setWellName(String wellName) {
-        WellName = wellName;
-    }
-
     public void setOperator(String operator) {
         Operator = operator;
     }
@@ -527,7 +519,7 @@ public class Borehole {
         CoordsSurfE = coordsSurfE;
     }
 
-    public void setUTM(int UTM) {
+    public void setUTM(Integer UTM) {
         this.UTM = UTM;
     }
 
@@ -551,11 +543,11 @@ public class Borehole {
         QtrQtr = qtrQtr;
     }
 
-    public void setSection(int section) {
+    public void setSection(Integer section) {
         Section = section;
     }
 
-    public void setTownship(int township) {
+    public void setTownship(Integer township) {
         Township = township;
     }
 
@@ -563,7 +555,7 @@ public class Borehole {
         TownshipDir = townshipDir;
     }
 
-    public void setRange(int range) {
+    public void setRange(Integer range) {
         Range = range;
     }
 
@@ -693,5 +685,5 @@ public class Borehole {
 
     public void setExtent(String extent) {
         Extent = extent;
-    }*/
+    }
 }
