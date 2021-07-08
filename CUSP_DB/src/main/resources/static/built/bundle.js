@@ -34104,9 +34104,12 @@ var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 
-var client = __webpack_require__(/*! ./client */ "./src/main/js/client.js"); //end::vars[]
-//tag::app[]
+var client = __webpack_require__(/*! ./client */ "./src/main/js/client.js");
 
+var follow = __webpack_require__(/*! ./follow */ "./src/main/js/follow.js");
+
+var root = '/api'; //end::vars[]
+//tag::app[]
 
 var App = /*#__PURE__*/function (_React$Component) {
   _inherits(App, _React$Component);
@@ -34121,60 +34124,322 @@ var App = /*#__PURE__*/function (_React$Component) {
     _this = _super.call(this, props); //add boreholes in a list
 
     _this.state = {
-      boreholes: []
+      boreholes: [],
+      attributes: [],
+      pageSize: 2,
+      links: {}
     };
+    _this.updatePageSize = _this.updatePageSize.bind(_assertThisInitialized(_this));
+    _this.onCreate = _this.onCreate.bind(_assertThisInitialized(_this));
+    _this.onDelete = _this.onDelete.bind(_assertThisInitialized(_this));
+    _this.onNavigate = _this.onNavigate.bind(_assertThisInitialized(_this));
     return _this;
-  }
+  } //tag::Load data
+
 
   _createClass(App, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
+    key: "loadFromServer",
+    value: function loadFromServer(pageSize) {
       var _this2 = this;
 
-      client({
-        method: "GET",
-        path: '/api/boreholes'
-      }).done(function (response) {
+      follow(client, root, [{
+        rel: 'boreholes',
+        params: {
+          size: pageSize
+        }
+      }]).then(function (boreholeCollection) {
+        return client({
+          method: 'GET',
+          path: boreholeCollection.entity._links.profile.href,
+          headers: {
+            'Accept': 'application/schema+json'
+          }
+        }).then(function (schema) {
+          _this2.schema = schema.entity;
+          return boreholeCollection;
+        });
+      }).done(function (boreholeCollection) {
         _this2.setState({
-          boreholes: response.entity._embedded.boreholes
+          boreholes: boreholeCollection.entity._embedded.boreholes,
+          attributes: Object.keys(_this2.schema.properties),
+          pageSize: pageSize,
+          links: boreholeCollection.entity._links
         });
       });
+    } //end::Load data
+    // tag::create[]
+
+  }, {
+    key: "onCreate",
+    value: function onCreate(newBorehole) {
+      var _this3 = this;
+
+      follow(client, root, ['boreholes']).then(function (boreholeCollection) {
+        return client({
+          method: 'POST',
+          path: boreholeCollection.entity._links.self.href,
+          entity: newBorehole,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      }).then(function (response) {
+        return follow(client, root, [{
+          rel: 'boreholes',
+          params: {
+            'size': _this3.state.pageSize
+          }
+        }]);
+      }).done(function (response) {
+        if (typeof response.entity._links.last !== "undefined") {
+          _this3.onNavigate(response.entity._links.last.href);
+        } else {
+          _this3.onNavigate(response.entity._links.self.href);
+        }
+      });
+    } // end::create[]
+    // tag::delete[]
+
+  }, {
+    key: "onDelete",
+    value: function onDelete(borehole) {
+      var _this4 = this;
+
+      client({
+        method: 'DELETE',
+        path: borehole._links.self.href
+      }).done(function (response) {
+        _this4.loadFromServer(_this4.state.pageSize);
+      });
+    } // end::delete[]
+    // tag::navigate[]
+
+  }, {
+    key: "onNavigate",
+    value: function onNavigate(navUri) {
+      var _this5 = this;
+
+      client({
+        method: 'GET',
+        path: navUri
+      }).done(function (boreholeCollection) {
+        _this5.setState({
+          boreholes: boreholeCollection.entity._embedded.boreholes,
+          attributes: _this5.state.attributes,
+          pageSize: _this5.state.pageSize,
+          links: boreholeCollection.entity._links
+        });
+      });
+    } // end::navigate[]
+    // tag::update-page-size[]
+
+  }, {
+    key: "updatePageSize",
+    value: function updatePageSize(pageSize) {
+      if (pageSize !== this.state.pageSize) {
+        this.loadFromServer(pageSize);
+      }
+    } // end::update-page-size[]
+
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadFromServer(this.state.pageSize);
     }
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement(BoreholeList, {
-        boreholes: this.state.boreholes
-      });
+      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(CreateDialog, {
+        attributes: this.state.attributes,
+        onCreate: this.onCreate
+      }), /*#__PURE__*/React.createElement(BoreholeList, {
+        boreholes: this.state.boreholes,
+        links: this.state.links,
+        pageSize: this.state.pageSize,
+        onNavigate: this.onNavigate,
+        onDelete: this.onDelete,
+        updatePageSize: this.updatePageSize
+      }));
     }
   }]);
 
   return App;
 }(React.Component); //end::app[]
+// tag::create-dialog[]
+
+
+var CreateDialog = /*#__PURE__*/function (_React$Component2) {
+  _inherits(CreateDialog, _React$Component2);
+
+  var _super2 = _createSuper(CreateDialog);
+
+  function CreateDialog(props) {
+    var _this6;
+
+    _classCallCheck(this, CreateDialog);
+
+    _this6 = _super2.call(this, props);
+    _this6.handleSubmit = _this6.handleSubmit.bind(_assertThisInitialized(_this6));
+    return _this6;
+  }
+
+  _createClass(CreateDialog, [{
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this7 = this;
+
+      e.preventDefault();
+      var newBorehole = {};
+      this.props.attributes.forEach(function (attribute) {
+        newBorehole[attribute] = ReactDOM.findDOMNode(_this7.refs[attribute]).value.trim();
+      });
+      this.props.onCreate(newBorehole); // clear out the dialog's inputs
+
+      this.props.attributes.forEach(function (attribute) {
+        ReactDOM.findDOMNode(_this7.refs[attribute]).value = '';
+      }); // Navigate away from the dialog to hide it.
+
+      window.location = "#";
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var inputs = this.props.attributes.map(function (attribute) {
+        return /*#__PURE__*/React.createElement("p", {
+          key: attribute
+        }, /*#__PURE__*/React.createElement("input", {
+          type: "text",
+          placeholder: attribute,
+          ref: attribute,
+          className: "field"
+        }));
+      });
+      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("a", {
+        href: "#createBorehole"
+      }, "Create"), /*#__PURE__*/React.createElement("div", {
+        id: "createBorehole",
+        className: "modalDialog"
+      }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("a", {
+        href: "#",
+        title: "Close",
+        className: "close"
+      }, "X"), /*#__PURE__*/React.createElement("h2", null, "Create new borehole"), /*#__PURE__*/React.createElement("form", null, inputs, /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleSubmit
+      }, "Create")))));
+    }
+  }]);
+
+  return CreateDialog;
+}(React.Component); // end::create-dialog[]
 //tag::borehole-list[]
 
 
-var BoreholeList = /*#__PURE__*/function (_React$Component2) {
-  _inherits(BoreholeList, _React$Component2);
+var BoreholeList = /*#__PURE__*/function (_React$Component3) {
+  _inherits(BoreholeList, _React$Component3);
 
-  var _super2 = _createSuper(BoreholeList);
+  var _super3 = _createSuper(BoreholeList);
 
-  function BoreholeList() {
+  function BoreholeList(props) {
+    var _this8;
+
     _classCallCheck(this, BoreholeList);
 
-    return _super2.apply(this, arguments);
-  }
+    _this8 = _super3.call(this, props);
+    _this8.handleNavFirst = _this8.handleNavFirst.bind(_assertThisInitialized(_this8));
+    _this8.handleNavPrev = _this8.handleNavPrev.bind(_assertThisInitialized(_this8));
+    _this8.handleNavNext = _this8.handleNavNext.bind(_assertThisInitialized(_this8));
+    _this8.handleNavLast = _this8.handleNavLast.bind(_assertThisInitialized(_this8));
+    _this8.handleInput = _this8.handleInput.bind(_assertThisInitialized(_this8));
+    return _this8;
+  } // tag::handle-page-size-updates[]
+
 
   _createClass(BoreholeList, [{
+    key: "handleInput",
+    value: function handleInput(e) {
+      e.preventDefault();
+      var pageSize = ReactDOM.findDOMNode(this.refs.pageSize).value;
+
+      if (/^[0-9]+$/.test(pageSize)) {
+        this.props.updatePageSize(pageSize);
+      } else {
+        ReactDOM.findDOMNode(this.refs.pageSize).value = pageSize.substring(0, pageSize.length - 1);
+      }
+    } // end::handle-page-size-updates[]
+    // tag::handle-nav[]
+
+  }, {
+    key: "handleNavFirst",
+    value: function handleNavFirst(e) {
+      e.preventDefault();
+      this.props.onNavigate(this.props.links.first.href);
+    }
+  }, {
+    key: "handleNavPrev",
+    value: function handleNavPrev(e) {
+      e.preventDefault();
+      this.props.onNavigate(this.props.links.prev.href);
+    }
+  }, {
+    key: "handleNavNext",
+    value: function handleNavNext(e) {
+      e.preventDefault();
+      this.props.onNavigate(this.props.links.next.href);
+    }
+  }, {
+    key: "handleNavLast",
+    value: function handleNavLast(e) {
+      e.preventDefault();
+      this.props.onNavigate(this.props.links.last.href);
+    } // end::handle-nav[]
+
+  }, {
     key: "render",
     value: function render() {
+      var _this9 = this;
+
       var boreholes = this.props.boreholes.map(function (borehole) {
         return /*#__PURE__*/React.createElement(Borehole, {
           key: borehole._links.self.href,
-          borehole: borehole
+          borehole: borehole,
+          onDelete: _this9.props.onDelete
         });
       });
-      return /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "API"), /*#__PURE__*/React.createElement("th", null, "WellName"), /*#__PURE__*/React.createElement("th", null, "Operator"), /*#__PURE__*/React.createElement("th", null, "OperatorNo"), /*#__PURE__*/React.createElement("th", null, "FieldName"), /*#__PURE__*/React.createElement("th", null, "Ground_Elev"), /*#__PURE__*/React.createElement("th", null, "Kelly_Elev"), /*#__PURE__*/React.createElement("th", null, "DrkFloor_Elev"), /*#__PURE__*/React.createElement("th", null, "CoordsSurf_N"), /*#__PURE__*/React.createElement("th", null, "CoordsSurf_E"), /*#__PURE__*/React.createElement("th", null, "UTMZone"), /*#__PURE__*/React.createElement("th", null, "Latitude"), /*#__PURE__*/React.createElement("th", null, "Longitude"), /*#__PURE__*/React.createElement("th", null, "FootageNS"), /*#__PURE__*/React.createElement("th", null, "Dir_NS"), /*#__PURE__*/React.createElement("th", null, "FootageEW"), /*#__PURE__*/React.createElement("th", null, "Dir_EW"), /*#__PURE__*/React.createElement("th", null, "QtrQtr"), /*#__PURE__*/React.createElement("th", null, "Section"), /*#__PURE__*/React.createElement("th", null, "Township"), /*#__PURE__*/React.createElement("th", null, "TownshipDir"), /*#__PURE__*/React.createElement("th", null, "Range"), /*#__PURE__*/React.createElement("th", null, "RangeDir"), /*#__PURE__*/React.createElement("th", null, "Merdian"), /*#__PURE__*/React.createElement("th", null, "County"), /*#__PURE__*/React.createElement("th", null, "Dir_Horiz"), /*#__PURE__*/React.createElement("th", null, "Dir_Vert"), /*#__PURE__*/React.createElement("th", null, "Dir_Direct"), /*#__PURE__*/React.createElement("th", null, "Confidential"), /*#__PURE__*/React.createElement("th", null, "ConfRelDate"), /*#__PURE__*/React.createElement("th", null, "LeaseNumber"), /*#__PURE__*/React.createElement("th", null, "LeaseType"), /*#__PURE__*/React.createElement("th", null, "SurfaceOwner"), /*#__PURE__*/React.createElement("th", null, "AbandonDate"), /*#__PURE__*/React.createElement("th", null, "WellStatus"), /*#__PURE__*/React.createElement("th", null, "TotCum_Oil"), /*#__PURE__*/React.createElement("th", null, "TotCum_Gas"), /*#__PURE__*/React.createElement("th", null, "TotCum_Water"), /*#__PURE__*/React.createElement("th", null, "IndianTribe"), /*#__PURE__*/React.createElement("th", null, "Multi_lats"), /*#__PURE__*/React.createElement("th", null, "OriginalFieldType"), /*#__PURE__*/React.createElement("th", null, "UniteName"), /*#__PURE__*/React.createElement("th", null, "GISStatusType"), /*#__PURE__*/React.createElement("th", null, "OrigComplDate"), /*#__PURE__*/React.createElement("th", null, "JURISDICTION"), /*#__PURE__*/React.createElement("th", null, "TDS_mg_L_Navajo"), /*#__PURE__*/React.createElement("th", null, "TDS_mg_L_Wingate")), boreholes));
+      var navLinks = [];
+
+      if ("first" in this.props.links) {
+        navLinks.push( /*#__PURE__*/React.createElement("button", {
+          key: "first",
+          onClick: this.handleNavFirst
+        }, "<<"));
+      }
+
+      if ("prev" in this.props.links) {
+        navLinks.push( /*#__PURE__*/React.createElement("button", {
+          key: "prev",
+          onClick: this.handleNavPrev
+        }, "<"));
+      }
+
+      if ("next" in this.props.links) {
+        navLinks.push( /*#__PURE__*/React.createElement("button", {
+          key: "next",
+          onClick: this.handleNavNext
+        }, ">"));
+      }
+
+      if ("last" in this.props.links) {
+        navLinks.push( /*#__PURE__*/React.createElement("button", {
+          key: "last",
+          onClick: this.handleNavLast
+        }, ">>"));
+      }
+
+      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+        ref: "pageSize",
+        defaultValue: this.props.pageSize,
+        onInput: this.handleInput
+      }), /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Delete"), /*#__PURE__*/React.createElement("th", null, "API"), /*#__PURE__*/React.createElement("th", null, "WellName"), /*#__PURE__*/React.createElement("th", null, "Operator"), /*#__PURE__*/React.createElement("th", null, "OperatorNo"), /*#__PURE__*/React.createElement("th", null, "FieldName"), /*#__PURE__*/React.createElement("th", null, "Ground_Elev"), /*#__PURE__*/React.createElement("th", null, "Kelly_Elev"), /*#__PURE__*/React.createElement("th", null, "DrkFloor_Elev"), /*#__PURE__*/React.createElement("th", null, "CoordsSurf_N"), /*#__PURE__*/React.createElement("th", null, "CoordsSurf_E"), /*#__PURE__*/React.createElement("th", null, "UTMZone"), /*#__PURE__*/React.createElement("th", null, "Latitude"), /*#__PURE__*/React.createElement("th", null, "Longitude"), /*#__PURE__*/React.createElement("th", null, "FootageNS"), /*#__PURE__*/React.createElement("th", null, "Dir_NS"), /*#__PURE__*/React.createElement("th", null, "FootageEW"), /*#__PURE__*/React.createElement("th", null, "Dir_EW"), /*#__PURE__*/React.createElement("th", null, "QtrQtr"), /*#__PURE__*/React.createElement("th", null, "Section"), /*#__PURE__*/React.createElement("th", null, "Township"), /*#__PURE__*/React.createElement("th", null, "TownshipDir"), /*#__PURE__*/React.createElement("th", null, "Range"), /*#__PURE__*/React.createElement("th", null, "RangeDir"), /*#__PURE__*/React.createElement("th", null, "Merdian"), /*#__PURE__*/React.createElement("th", null, "County"), /*#__PURE__*/React.createElement("th", null, "Dir_Horiz"), /*#__PURE__*/React.createElement("th", null, "Dir_Vert"), /*#__PURE__*/React.createElement("th", null, "Dir_Direct"), /*#__PURE__*/React.createElement("th", null, "Confidential"), /*#__PURE__*/React.createElement("th", null, "ConfRelDate"), /*#__PURE__*/React.createElement("th", null, "LeaseNumber"), /*#__PURE__*/React.createElement("th", null, "LeaseType"), /*#__PURE__*/React.createElement("th", null, "SurfaceOwner"), /*#__PURE__*/React.createElement("th", null, "AbandonDate"), /*#__PURE__*/React.createElement("th", null, "WellStatus"), /*#__PURE__*/React.createElement("th", null, "TotCum_Oil"), /*#__PURE__*/React.createElement("th", null, "TotCum_Gas"), /*#__PURE__*/React.createElement("th", null, "TotCum_Water"), /*#__PURE__*/React.createElement("th", null, "IndianTribe"), /*#__PURE__*/React.createElement("th", null, "Multi_lats"), /*#__PURE__*/React.createElement("th", null, "OriginalFieldType"), /*#__PURE__*/React.createElement("th", null, "UniteName"), /*#__PURE__*/React.createElement("th", null, "GISStatusType"), /*#__PURE__*/React.createElement("th", null, "OrigComplDate"), /*#__PURE__*/React.createElement("th", null, "JURISDICTION"), /*#__PURE__*/React.createElement("th", null, "TDS_mg_L_Navajo"), /*#__PURE__*/React.createElement("th", null, "TDS_mg_L_Wingate")), boreholes)), /*#__PURE__*/React.createElement("div", null, navLinks));
     }
   }]);
 
@@ -34183,21 +34448,32 @@ var BoreholeList = /*#__PURE__*/function (_React$Component2) {
 //tag::borehole
 
 
-var Borehole = /*#__PURE__*/function (_React$Component3) {
-  _inherits(Borehole, _React$Component3);
+var Borehole = /*#__PURE__*/function (_React$Component4) {
+  _inherits(Borehole, _React$Component4);
 
-  var _super3 = _createSuper(Borehole);
+  var _super4 = _createSuper(Borehole);
 
-  function Borehole() {
+  function Borehole(props) {
+    var _this10;
+
     _classCallCheck(this, Borehole);
 
-    return _super3.apply(this, arguments);
+    _this10 = _super4.call(this, props);
+    _this10.handleDelete = _this10.handleDelete.bind(_assertThisInitialized(_this10));
+    return _this10;
   }
 
   _createClass(Borehole, [{
+    key: "handleDelete",
+    value: function handleDelete() {
+      this.props.onDelete(this.props.borehole);
+    }
+  }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, this.props.borehole.api), /*#__PURE__*/React.createElement("td", null, this.props.borehole.wellName), /*#__PURE__*/React.createElement("td", null, this.props.borehole.operator), /*#__PURE__*/React.createElement("td", null, this.props.borehole.operatorNo), /*#__PURE__*/React.createElement("td", null, this.props.borehole.fieldName), /*#__PURE__*/React.createElement("td", null, this.props.borehole.groundElev), /*#__PURE__*/React.createElement("td", null, this.props.borehole.kellyElev), /*#__PURE__*/React.createElement("td", null, this.props.borehole.drkFloorElev), /*#__PURE__*/React.createElement("td", null, this.props.borehole.coordsSurfN), /*#__PURE__*/React.createElement("td", null, this.props.borehole.coordsSurfE), /*#__PURE__*/React.createElement("td", null, this.props.borehole.utm), /*#__PURE__*/React.createElement("td", null, this.props.borehole.latitude), /*#__PURE__*/React.createElement("td", null, this.props.borehole.longitude), /*#__PURE__*/React.createElement("td", null, this.props.borehole.footageNS), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirNS), /*#__PURE__*/React.createElement("td", null, this.props.borehole.footageEW), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirEW), /*#__PURE__*/React.createElement("td", null, this.props.borehole.qtrQtr), /*#__PURE__*/React.createElement("td", null, this.props.borehole.section), /*#__PURE__*/React.createElement("td", null, this.props.borehole.township), /*#__PURE__*/React.createElement("td", null, this.props.borehole.townshipDir), /*#__PURE__*/React.createElement("td", null, this.props.borehole.range), /*#__PURE__*/React.createElement("td", null, this.props.borehole.rangeDir), /*#__PURE__*/React.createElement("td", null, this.props.borehole.meridian), /*#__PURE__*/React.createElement("td", null, this.props.borehole.county), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirHoriz), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirVert), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirDirect), /*#__PURE__*/React.createElement("td", null, this.props.borehole.confidential), /*#__PURE__*/React.createElement("td", null, this.props.borehole.confRelDate), /*#__PURE__*/React.createElement("td", null, this.props.borehole.leaseNumber), /*#__PURE__*/React.createElement("td", null, this.props.borehole.leaseType), /*#__PURE__*/React.createElement("td", null, this.props.borehole.surfaceOwner), /*#__PURE__*/React.createElement("td", null, this.props.borehole.abandonDate), /*#__PURE__*/React.createElement("td", null, this.props.borehole.wellStatus), /*#__PURE__*/React.createElement("td", null, this.props.borehole.totCumOil), /*#__PURE__*/React.createElement("td", null, this.props.borehole.totCumGas), /*#__PURE__*/React.createElement("td", null, this.props.borehole.totCumWater), /*#__PURE__*/React.createElement("td", null, this.props.borehole.indianTribe), /*#__PURE__*/React.createElement("td", null, this.props.borehole.multiLats), /*#__PURE__*/React.createElement("td", null, this.props.borehole.origianlField), /*#__PURE__*/React.createElement("td", null, this.props.borehole.unitName), /*#__PURE__*/React.createElement("td", null, this.props.borehole.gisstatusType), /*#__PURE__*/React.createElement("td", null, this.props.borehole.origComplDate), /*#__PURE__*/React.createElement("td", null, this.props.borehole.jurisdiction), /*#__PURE__*/React.createElement("td", null, this.props.borehole.tdsnavajo), /*#__PURE__*/React.createElement("td", null, this.props.borehole.tdswingate));
+      return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("button", {
+        onClick: this.handleDelete
+      }, "Delete")), /*#__PURE__*/React.createElement("td", null, this.props.borehole.api), /*#__PURE__*/React.createElement("td", null, this.props.borehole.wellName), /*#__PURE__*/React.createElement("td", null, this.props.borehole.operator), /*#__PURE__*/React.createElement("td", null, this.props.borehole.operatorNo), /*#__PURE__*/React.createElement("td", null, this.props.borehole.fieldName), /*#__PURE__*/React.createElement("td", null, this.props.borehole.groundElev), /*#__PURE__*/React.createElement("td", null, this.props.borehole.kellyElev), /*#__PURE__*/React.createElement("td", null, this.props.borehole.drkFloorElev), /*#__PURE__*/React.createElement("td", null, this.props.borehole.coordsSurfN), /*#__PURE__*/React.createElement("td", null, this.props.borehole.coordsSurfE), /*#__PURE__*/React.createElement("td", null, this.props.borehole.utm), /*#__PURE__*/React.createElement("td", null, this.props.borehole.latitude), /*#__PURE__*/React.createElement("td", null, this.props.borehole.longitude), /*#__PURE__*/React.createElement("td", null, this.props.borehole.footageNS), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirNS), /*#__PURE__*/React.createElement("td", null, this.props.borehole.footageEW), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirEW), /*#__PURE__*/React.createElement("td", null, this.props.borehole.qtrQtr), /*#__PURE__*/React.createElement("td", null, this.props.borehole.section), /*#__PURE__*/React.createElement("td", null, this.props.borehole.township), /*#__PURE__*/React.createElement("td", null, this.props.borehole.townshipDir), /*#__PURE__*/React.createElement("td", null, this.props.borehole.range), /*#__PURE__*/React.createElement("td", null, this.props.borehole.rangeDir), /*#__PURE__*/React.createElement("td", null, this.props.borehole.meridian), /*#__PURE__*/React.createElement("td", null, this.props.borehole.county), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirHoriz), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirVert), /*#__PURE__*/React.createElement("td", null, this.props.borehole.dirDirect), /*#__PURE__*/React.createElement("td", null, this.props.borehole.confidential), /*#__PURE__*/React.createElement("td", null, this.props.borehole.confRelDate), /*#__PURE__*/React.createElement("td", null, this.props.borehole.leaseNumber), /*#__PURE__*/React.createElement("td", null, this.props.borehole.leaseType), /*#__PURE__*/React.createElement("td", null, this.props.borehole.surfaceOwner), /*#__PURE__*/React.createElement("td", null, this.props.borehole.abandonDate), /*#__PURE__*/React.createElement("td", null, this.props.borehole.wellStatus), /*#__PURE__*/React.createElement("td", null, this.props.borehole.totCumOil), /*#__PURE__*/React.createElement("td", null, this.props.borehole.totCumGas), /*#__PURE__*/React.createElement("td", null, this.props.borehole.totCumWater), /*#__PURE__*/React.createElement("td", null, this.props.borehole.indianTribe), /*#__PURE__*/React.createElement("td", null, this.props.borehole.multiLats), /*#__PURE__*/React.createElement("td", null, this.props.borehole.origianlField), /*#__PURE__*/React.createElement("td", null, this.props.borehole.unitName), /*#__PURE__*/React.createElement("td", null, this.props.borehole.gisstatusType), /*#__PURE__*/React.createElement("td", null, this.props.borehole.origComplDate), /*#__PURE__*/React.createElement("td", null, this.props.borehole.jurisdiction), /*#__PURE__*/React.createElement("td", null, this.props.borehole.tdsnavajo), /*#__PURE__*/React.createElement("td", null, this.props.borehole.tdswingate));
     }
   }]);
 
@@ -34242,6 +34518,55 @@ module.exports = rest.wrap(mime, {
     'Accept': 'application/hal+json'
   }
 });
+
+/***/ }),
+
+/***/ "./src/main/js/follow.js":
+/*!*******************************!*\
+  !*** ./src/main/js/follow.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function follow(api, rootPath, relArray) {
+  var root = api({
+    method: 'GET',
+    path: rootPath
+  });
+  return relArray.reduce(function (root, arrayItem) {
+    var rel = typeof arrayItem === 'string' ? arrayItem : arrayItem.rel;
+    return traverseNext(root, rel, arrayItem);
+  }, root);
+
+  function traverseNext(root, rel, arrayItem) {
+    return root.then(function (response) {
+      if (hasEmbeddedRel(response.entity, rel)) {
+        return response.entity._embedded[rel];
+      }
+
+      if (!response.entity._links) {
+        return [];
+      }
+
+      if (typeof arrayItem === 'string') {
+        return api({
+          method: 'GET',
+          path: response.entity._links[rel].href
+        });
+      } else {
+        return api({
+          method: 'GET',
+          path: response.entity._links[rel].href,
+          params: arrayItem.params
+        });
+      }
+    });
+  }
+
+  function hasEmbeddedRel(entity, rel) {
+    return entity._embedded && entity._embedded.hasOwnProperty(rel);
+  }
+};
 
 /***/ }),
 
