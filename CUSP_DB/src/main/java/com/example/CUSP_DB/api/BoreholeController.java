@@ -15,7 +15,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import java.util.List;
 
 @RestController
-@RequestMapping("api/Borehole")
+@RequestMapping("boreholes")
 public class BoreholeController {
 
     private BoreholeService boreholeService;
