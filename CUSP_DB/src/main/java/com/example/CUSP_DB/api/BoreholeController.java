@@ -54,5 +54,17 @@ public class BoreholeController {
         }
     }
 
+    @RequestMapping("/insert")
+    @PostMapping()
+    public ResponseEntity<String> insertBorehole(@RequestParam int first, @RequestParam int end){
+        try{
+            System.out.println("before insert in controller");
+            boreholeService.insert(first,end);
+            System.out.println("after insert in controller");
+            return ResponseEntity.status(HttpStatus.OK).body("Add boreholes successfully");
+        }  catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Add boreholes failed: "+e.getMessage());
+        }
+    }
 
 }
