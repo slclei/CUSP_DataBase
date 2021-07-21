@@ -55,81 +55,82 @@ public class HttpParse {
         String operator=elements.get(4).text();
         borehole.setOperator(operator);
         //WellType: gas well: GW; Water Disposal well: WD:6-5
-        String wellType=elements.get(5).toString();
+        String wellType=elements.get(5).text();
         if(wellType.equals("Gas Well")){
             borehole.setWellType("GW");
         }
 
         //Surface Owner: 9-8
-        String surfaceOwner=elements.get(8).toString();
+        String surfaceOwner=elements.get(8).text();
         borehole.setSurfaceOwner(surfaceOwner);
         //Confidential: 10-9
-        String confidential=elements.get(9).toString();
+        String confidential=elements.get(9).text();
         borehole.setConfidential(confidential);
         //Tribe: 11-10
-        String tribe=elements.get(10).toString();
+        String tribe=elements.get(10).text();
         borehole.setIndianTribe(tribe);
         //UnitName: 12-11
-        String unitName=elements.get(11).toString();
+        String unitName=elements.get(11).text();
         borehole.setUnitName(unitName);
         //Cumulative oil production: 15-14
-        Long cumOil=Long.valueOf(elements.get(14).toString());
+        Long cumOil= Long.valueOf(elements.get(14).text());
         borehole.setTotCumOil(cumOil);
         //Cumulative gas production: 16-15
-        Long cumGas=Long.valueOf(elements.get(15).toString());
-        borehole.setTotCumOil(cumGas);
+        Long cumGas=Long.valueOf(elements.get(15).text());
+        borehole.setTotCumGas(cumGas);
         //Cumulative water production: 17-16
-        Long cumWater=Long.valueOf(elements.get(16).toString());
-        borehole.setTotCumOil(cumWater);
+        Long cumWater=Long.valueOf(elements.get(16).text());
+        borehole.setTotCumWater(cumWater);
         //original field type: 21-20
-        String originalType=elements.get(20).toString();
+        String originalType=elements.get(20).text();
         borehole.setOrigianlField(originalType);
         //section: 24-23
-        int section=Integer.valueOf(elements.get(23).toString());
+        int section=Integer.valueOf(elements.get(23).text());
         borehole.setSection(section);
         //township and direction: 25-24
         //08s: township: 08, direction: s
-        String twp=elements.get(24).toString();
+        String twp=elements.get(24).text();
         borehole.setTownship(Integer.valueOf(twp.substring(0,twp.length()-1)));
         borehole.setTownshipDir(twp.charAt(twp.length()-1));
         //range and direction: 26-25
-        String rng=elements.get(25).toString();
+        String rng=elements.get(25).text();
         borehole.setRange(Integer.valueOf(rng.substring(0,rng.length()-1)));
         borehole.setRangeDir(rng.charAt(rng.length()-1));
         //qtrqtr:27-26
         //Southeast of Northwest=>SENW
-        String qq=elements.get(26).toString();
+        String qq=elements.get(26).text();
         String qtr=(""+qq.charAt(0)+qq.charAt(5)+qq.charAt(13)+qq.charAt(18)).toUpperCase(Locale.ROOT);
         borehole.setQtrQtr(qtr);
         //NS feet: 28-27
-        String nsFeet=elements.get(27).toString();
+        String nsFeet=elements.get(27).text();
         borehole.setFootageNS(Long.valueOf(nsFeet));
         //Dir N/s:29-28
-        String ns=elements.get(28).toString();
+        String ns=elements.get(28).text();
         borehole.setDirNS("F"+ns+"L");
         //EW feet: 30-29
-        String ewFeet=elements.get(29).toString();
+        String ewFeet=elements.get(29).text();
         borehole.setFootageEW(Long.valueOf(ewFeet));
         //Dir e/w:31-30
-        String ew=elements.get(30).toString();
+        String ew=elements.get(30).text();
         borehole.setDirNS("F"+ew+"L");
         //Latitude: 32-31
-        Float latitude=Float.valueOf(elements.get(31).toString());
+        Float latitude=Float.valueOf(elements.get(31).text());
         borehole.setLatitude(latitude);
         //Longitude:33-32
-        Float longitude=Float.valueOf(elements.get(32).toString());
-        borehole.setLatitude(longitude);
+        Float longitude=Float.valueOf(elements.get(32).text());
+        borehole.setLongitude(longitude);
         //set UTM: 36-35
-        String utm=elements.get(35).toString().substring(5);
+        String utm=elements.get(35).text().substring(5);
         borehole.setUTM(Integer.valueOf(utm));
         //set Meridian: 38-37
-        String meridian=elements.get(37).toString();
+        String meridian=elements.get(37).text();
         borehole.setMeridian(meridian.charAt(0));
         //set county:39-38
-        String county=elements.get(38).toString();
+        String county=elements.get(38).text();
         borehole.setCounty(county);
-        Elements elements2=doc.select("td nowrap");
-        System.out.println(elements2);
+        Elements elements2=doc.select("tr[class=RelatedTableRow]");
+        System.out.println(elements2.get(0));
+        System.out.println(elements2.get(0).select("td").get(5).text());
 
 
 
