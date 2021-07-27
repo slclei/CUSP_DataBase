@@ -55,108 +55,170 @@ public class HttpParse {
         }
         //Operator: 5-4
         String operator=elements.get(4).text();
-        borehole.setOperator(operator);
+        if(operator!=null) {
+            borehole.setOperator(operator);
+        }
         //Operator number
-        String operatorNumber=elements.get(4).select("a").attr("href").substring(32,38);
-        borehole.setOperatorNo(Long.valueOf(operatorNumber));
+        String operatorNumber=elements.get(4).select("a").attr("href");
+        if(operatorNumber!=null) {
+            borehole.setOperatorNo(Long.valueOf(operatorNumber.substring(32, 38)));
+        }
         //WellType: gas well: GW; Water Disposal well: WD:6-5
         String wellType=elements.get(5).text();
-        borehole.setWellType(wellType.charAt(0)+"W");
+        if(wellType!=null) {
+            borehole.setWellType(wellType.charAt(0) + "W");
+        }
 
         //Surface Owner: 9-8
         String surfaceOwner=elements.get(8).text();
-        borehole.setSurfaceOwner(surfaceOwner);
+        if (surfaceOwner!=null) {
+            borehole.setSurfaceOwner(surfaceOwner);
+        }
         //Confidential: 10-9
         String confidential=elements.get(9).text();
-        borehole.setConfidential(confidential);
+        if(confidential!=null) {
+            borehole.setConfidential(confidential);
+        }
         //Tribe: 11-10
         String tribe=elements.get(10).text();
-        borehole.setIndianTribe(tribe);
+        if(tribe!=null) {
+            borehole.setIndianTribe(tribe);
+        }
         //UnitName: 12-11
         String unitName=elements.get(11).text();
-        borehole.setUnitName(unitName);
-        borehole.setFieldName(unitName);
+        if(unitName!=null) {
+            borehole.setUnitName(unitName);
+            borehole.setFieldName(unitName);
+        }
         //Cumulative oil production: 15-14
-        Long cumOil= Long.valueOf(elements.get(14).text());
-        borehole.setTotCumOil(cumOil);
+        String cumOil= elements.get(14).text();
+        if(cumOil!=null) {
+            borehole.setTotCumOil(Long.valueOf(cumOil));
+        }
         //Cumulative gas production: 16-15
-        Long cumGas=Long.valueOf(elements.get(15).text());
-        borehole.setTotCumGas(cumGas);
+        String cumGas=elements.get(15).text();
+        if(cumGas!=null) {
+            borehole.setTotCumGas(Long.valueOf(cumGas));
+        }
         //Cumulative water production: 17-16
-        Long cumWater=Long.valueOf(elements.get(16).text());
-        borehole.setTotCumWater(cumWater);
+        String cumWater=elements.get(16).text();
+        if(cumWater!=null) {
+            borehole.setTotCumWater(Long.valueOf(cumWater));
+        }
         //original field type: 21-20
         String originalType=elements.get(20).text();
-        borehole.setOrigianlField(originalType);
+        if (originalType!=null) {
+            borehole.setOrigianlField(originalType);
+        }
         //section: 24-23
-        int section=Integer.valueOf(elements.get(23).text());
-        borehole.setSection(section);
+        String section=elements.get(23).text();
+        if(section!=null) {
+            borehole.setSection(Integer.valueOf(section));
+        }
         //township and direction: 25-24
         //08s: township: 08, direction: s
         String twp=elements.get(24).text();
-        borehole.setTownship(Integer.valueOf(twp.substring(0,twp.length()-1)));
-        borehole.setTownshipDir(twp.charAt(twp.length()-1));
+        if(twp!=null) {
+            borehole.setTownship(Integer.valueOf(twp.substring(0, twp.length() - 1)));
+            borehole.setTownshipDir(twp.charAt(twp.length() - 1));
+        }
         //range and direction: 26-25
         String rng=elements.get(25).text();
-        borehole.setRange(Integer.valueOf(rng.substring(0,rng.length()-1)));
-        borehole.setRangeDir(rng.charAt(rng.length()-1));
+        if (rng!=null) {
+            borehole.setRange(Integer.valueOf(rng.substring(0, rng.length() - 1)));
+            borehole.setRangeDir(rng.charAt(rng.length() - 1));
+        }
         //qtrqtr:27-26
         //Southeast of Northwest=>SENW
         String qq=elements.get(26).text();
-        String qtr=(""+qq.charAt(0)+qq.charAt(5)+qq.charAt(13)+qq.charAt(18)).toUpperCase(Locale.ROOT);
-        borehole.setQtrQtr(qtr);
+        if(qq!=null) {
+            String qtr = ("" + qq.charAt(0) + qq.charAt(5) + qq.charAt(13) + qq.charAt(18)).toUpperCase(Locale.ROOT);
+            borehole.setQtrQtr(qtr);
+        }
         //NS feet: 28-27
         String nsFeet=elements.get(27).text();
-        borehole.setFootageNS(Long.valueOf(nsFeet));
+        if(nsFeet!=null) {
+            borehole.setFootageNS(Long.valueOf(nsFeet));
+        }
         //Dir N/s:29-28
         String ns=elements.get(28).text();
-        borehole.setDirNS("F"+ns+"L");
+        if(ns!=null) {
+            borehole.setDirNS("F" + ns + "L");
+        }
         //EW feet: 30-29
         String ewFeet=elements.get(29).text();
-        borehole.setFootageEW(Long.valueOf(ewFeet));
+        if(ewFeet!=null) {
+            borehole.setFootageEW(Long.valueOf(ewFeet));
+        }
         //Dir e/w:31-30
         String ew=elements.get(30).text();
-        borehole.setDirEW("F"+ew+"L");
+        if(ew!=null) {
+            borehole.setDirEW("F" + ew + "L");
+        }
         //Latitude: 32-31
-        Float latitude=Float.valueOf(elements.get(31).text());
-        borehole.setLatitude(latitude);
+        String latitude=elements.get(31).text();
+        if(latitude!=null) {
+            borehole.setLatitude(Float.valueOf(latitude));
+        }
         //Longitude:33-32
-        Float longitude=Float.valueOf(elements.get(32).text());
-        borehole.setLongitude(longitude);
+        String longitude=elements.get(32).text();
+        if(longitude!=null) {
+            borehole.setLongitude(Float.valueOf(longitude));
+        }
         //UTM Easting
-        Long toEast=Long.valueOf(elements.get(33).text());
-        borehole.setCoordsSurfE(toEast);
+        String toEast=elements.get(33).text();
+        if(toEast!=null) {
+            borehole.setCoordsSurfE(Long.valueOf(toEast));
+        }
         //UTM Northing
-        Long toNorth=Long.valueOf(elements.get(34).text());
-        borehole.setCoordsSurfN(toNorth);
+        String toNorth=elements.get(34).text();
+        if(toNorth!=null) {
+            borehole.setCoordsSurfN(Long.valueOf(toNorth));
+        }
         //set UTM: 36-35
         String utm=elements.get(35).text().substring(5);
-        borehole.setUTM(Integer.valueOf(utm));
+        if(utm!=null) {
+            borehole.setUTM(Integer.valueOf(utm));
+        }
         //set Meridian: 38-37
         String meridian=elements.get(37).text();
-        borehole.setMeridian(meridian.charAt(0));
+        if(meridian!=null) {
+            borehole.setMeridian(meridian.charAt(0));
+        }
         //set county:39-38
         String county=elements.get(38).text();
-        borehole.setCounty(county);
+        if(county!=null) {
+            borehole.setCounty(county);
+        }
         Elements elements2=doc.select("tr[class=RelatedTableRow]");
         //direction
-        Character direction=elements2.get(0).select("td").get(2).text().charAt(0);
-        if (direction.equals("V")){
-            borehole.setDirVert('Y');
-            borehole.setDirHoriz('N');
-        } else {
-            borehole.setDirVert('N');
-            borehole.setDirHoriz('Y');
+        String directions=elements2.get(0).select("td").get(2).text();
+        if(directions!=null) {
+            Character direction=directions.charAt(0);
+            if (direction.equals("V")) {
+                borehole.setDirVert('Y');
+                borehole.setDirHoriz('N');
+            } else {
+                borehole.setDirVert('N');
+                borehole.setDirHoriz('Y');
+            }
         }
         //well status
-        Character wellStatus=elements2.get(0).select("td").get(4).text().charAt(0);
-        borehole.setWellStatus(wellStatus);
+        String wellStatuses=elements2.get(0).select("td").get(4).text();
+        if(wellStatuses!=null) {
+            Character wellStatus=wellStatuses.charAt(0);
+            borehole.setWellStatus(wellStatus);
+        }
         //lease type
         String leaseType=elements2.get(0).select("td").get(5).text();
-        borehole.setLeaseType(leaseType);
+        if(leaseType!=null) {
+            borehole.setLeaseType(leaseType);
+        }
         //lease number
         String leaseNumber=elements2.get(0).select("td").get(6).text();
-        borehole.setLeaseNumber(leaseNumber);
+        if(leaseNumber!=null) {
+            borehole.setLeaseNumber(leaseNumber);
+        }
 
         return borehole;
 
