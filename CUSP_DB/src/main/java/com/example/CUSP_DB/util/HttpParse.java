@@ -50,15 +50,18 @@ public class HttpParse {
         }
         //WellName: 4-3
         String wellName=elements.get(3).text();
-        borehole.setWellName(wellName);
+        if (wellName!=null) {
+            borehole.setWellName(wellName);
+        }
         //Operator: 5-4
         String operator=elements.get(4).text();
         borehole.setOperator(operator);
+        //Operator number
+        String operatorNumber=elements.get(4).select("a").attr("href").substring(32,38);
+        borehole.setOperatorNo(Long.valueOf(operatorNumber));
         //WellType: gas well: GW; Water Disposal well: WD:6-5
         String wellType=elements.get(5).text();
-        if(wellType.equals("Gas Well")){
-            borehole.setWellType("GW");
-        }
+        borehole.setWellType(wellType.charAt(0)+"W");
 
         //Surface Owner: 9-8
         String surfaceOwner=elements.get(8).text();
@@ -72,6 +75,7 @@ public class HttpParse {
         //UnitName: 12-11
         String unitName=elements.get(11).text();
         borehole.setUnitName(unitName);
+        borehole.setFieldName(unitName);
         //Cumulative oil production: 15-14
         Long cumOil= Long.valueOf(elements.get(14).text());
         borehole.setTotCumOil(cumOil);
@@ -112,13 +116,19 @@ public class HttpParse {
         borehole.setFootageEW(Long.valueOf(ewFeet));
         //Dir e/w:31-30
         String ew=elements.get(30).text();
-        borehole.setDirNS("F"+ew+"L");
+        borehole.setDirEW("F"+ew+"L");
         //Latitude: 32-31
         Float latitude=Float.valueOf(elements.get(31).text());
         borehole.setLatitude(latitude);
         //Longitude:33-32
         Float longitude=Float.valueOf(elements.get(32).text());
         borehole.setLongitude(longitude);
+        //UTM Easting
+        Long toEast=Long.valueOf(elements.get(33).text());
+        borehole.setCoordsSurfE(toEast);
+        //UTM Northing
+        Long toNorth=Long.valueOf(elements.get(34).text());
+        borehole.setCoordsSurfN(toNorth);
         //set UTM: 36-35
         String utm=elements.get(35).text().substring(5);
         borehole.setUTM(Integer.valueOf(utm));
@@ -129,10 +139,24 @@ public class HttpParse {
         String county=elements.get(38).text();
         borehole.setCounty(county);
         Elements elements2=doc.select("tr[class=RelatedTableRow]");
-        System.out.println(elements2.get(0));
-        System.out.println(elements2.get(0).select("td").get(5).text());
-
-
+        //direction
+        Character direction=elements2.get(0).select("td").get(2).text().charAt(0);
+        if (direction.equals("V")){
+            borehole.setDirVert('Y');
+            borehole.setDirHoriz('N');
+        } else {
+            borehole.setDirVert('N');
+            borehole.setDirHoriz('Y');
+        }
+        //well status
+        Character wellStatus=elements2.get(0).select("td").get(4).text().charAt(0);
+        borehole.setWellStatus(wellStatus);
+        //lease type
+        String leaseType=elements2.get(0).select("td").get(5).text();
+        borehole.setLeaseType(leaseType);
+        //lease number
+        String leaseNumber=elements2.get(0).select("td").get(6).text();
+        borehole.setLeaseNumber(leaseNumber);
 
         return borehole;
 
