@@ -1,0 +1,452 @@
+<html xmlns="http://www.w3.org/1999/xhtml">   
+ <head>
+  <title>
+	Untitled Page
+</title>
+  <link href="styles/default.css" rel="stylesheet" type="text/css">
+ </head> 
+ <body class="PanelBackNoBorder"> 
+  <form method="post" action="./ED.aspx?keyName=PKey&amp;keyValue=8501&amp;keyType=Integer&amp;detailXML=WellDetails.xml&amp;DETAILSONLY=True" id="form1"> 
+   <div class="aspNetHidden"> 
+    <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="kOYv5YNnOQfmKLCxGrIWZR9CZT841GsuxEoxc2fs41di9KN6TmflTgZBNjBJtMfYiqudzKfK1RNQeBL5Sw1yZvzrgWBDQD0GwcuJPJ18RpJEz/uCpqLwJmKQUUpkcOB7"> 
+   </div> 
+   <div class="aspNetHidden"> 
+    <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="9407F209"> 
+    <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="wwhY4Mk8DpLP3Bek8AoZJGjdqs+JlSUKT5ir1Sbs3YYvibhDKVyl9SxiOQ88gxK81cPLC9YVFfTEL4DmbwiVy4gHfTBAgUQvT8xcyyku2vmJdT/vONNGzrRotuD00KlN"> 
+   </div> 
+   <input name="XML" type="hidden" id="XML"> 
+   <div class="ContactIcon"> 
+   </div> 
+   <div> <span id="ED">
+     <link href="css/cupertino/jquery-ui-1.10.4.custom.min.css" rel="stylesheet"><script src="js/jquery-1.11.0.min.js"></script>
+     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css"><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+     <link href="css/ui.jqgrid.css" rel="stylesheet" type="text/css"><script src="js/grid.locale-en.js"></script><script src="js/jquery.jqGrid.min.js"></script><script>
+var activeTab = 0;
+function loadGridData(idx) {
+var resultmsg = $("#resultmsg" + idx);
+if (resultmsg.length == 0 || resultmsg[0].loadStarted) return;
+resultmsg[0].loadStarted = true;
+resultmsg.text("(querying...)");
+$.get("api/EntityTable?keyName=PKey&keyValue=8501&keyType=Integer&detailXML=WellDetails.xml&subTab=" + idx + "&dataType=application/json")
+.done(function (data) {
+jQuery("#jqgridlist" + idx).jqGrid({
+data: data.colD,
+datatype: "local",
+height: 300,
+width: null,
+shrinkToFit: false,
+rowNum: 50,
+rowList: [50, 100, 200, 300],
+colNames: data.colN,
+colModel: data.colM,
+pager: "#pjqgridlist" + idx,headertitles: true,
+viewrecords: true,
+loadComplete: function () {
+resizeGrid(idx);
+}});
+resultmsg.text("(" + data.colD.length + ")");
+})
+.fail(function(jqXHR, textStatus, err) {
+resultmsg.text("(" + err + ")");
+});
+}
+function EntityDivClick(id) {
+activeTab = id
+  document.getElementById('TAB0').className='InactiveTab';
+   document.getElementById('EDI0').style.visibility='hidden';
+  document.getElementById('TAB1').className='InactiveTab';
+   document.getElementById('EDI1').style.visibility='hidden';
+  document.getElementById('TAB2').className='InactiveTab';
+   document.getElementById('EDI2').style.visibility='hidden';
+  document.getElementById('TAB3').className='InactiveTab';
+   document.getElementById('EDI3').style.visibility='hidden';
+  document.getElementById('TAB4').className='InactiveTab';
+   document.getElementById('EDI4').style.visibility='hidden';
+  document.getElementById('TAB5').className='InactiveTab';
+   document.getElementById('EDI5').style.visibility='hidden';
+  document.getElementById('TAB6').className='InactiveTab';
+   document.getElementById('EDI6').style.visibility='hidden';
+  document.getElementById('TAB7').className='InactiveTab';
+   document.getElementById('EDI7').style.visibility='hidden';
+  document.getElementById('TAB8').className='InactiveTab';
+   document.getElementById('EDI8').style.visibility='hidden';
+  document.getElementById('TAB9').className='InactiveTab';
+   document.getElementById('EDI9').style.visibility='hidden';
+  document.getElementById('TAB10').className='InactiveTab';
+   document.getElementById('EDI10').style.visibility='hidden';
+   var t = 'EDI' + id;
+   thisDiv=document.getElementById(t);
+   thisDiv.style.visibility='visible';
+var height = 0;
+var maxHeight = $('#' + t).height();
+ $('#' + t).children('table').each(function() {
+height = height + $(this).height();
+if (height > maxHeight) { 
+$('#' + t).css('overflow-y','scroll');
+$('#' + t + ' .RelatedTableHeaderRow').css('margin-right','10px');
+} else {
+$('#' + t).css('overflow-y','hidden');
+ $('#' + t + ' .RelatedTableHeaderRow').css('margin-right','0px');
+ }
+}); 
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   thisDiv.className='ActiveTab';
+   var g = $("#jqgridlist" + id);
+   if (g.length && !g[0].grid) { loadGridData(id); } 
+}
+function EntityDivMouseOut(id) {
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+   var t = 'TAB' + id;
+   thisDiv=document.getElementById(t);
+   var t1 = 'EDI' + id;
+   t1Div=document.getElementById(t1);
+   if (t1Div.style.visibility=='visible') {
+      thisDiv.className='ActiveTab';
+   } else {
+      thisDiv.className='InactiveTab';
+   }
+}
+function ExportTableToCSV(idx, fileName) {
+var d = new Date();
+var yyyy = d.getFullYear();
+var mm = d.getMonth() + 1;
+var dd = d.getDate();
+var hh = d.getHours();
+var m = d.getMinutes();
+var fileName2 = fileName.replace('.csv', '_' + yyyy.toString() + (mm > 9 ? '' : '0') + mm.toString() + (dd > 9 ? '' : '0') + dd.toString() + '_' + (hh > 9 ? '' : '0') + hh.toString() + '-' + (m > 9 ? '' : '0') + m.toString() + '.csv');
+   window.location = "api/EntityTable?keyName=PKey&keyValue=8501&keyType=Integer&detailXML=WellDetails.xml&dataType=text/csv&fileName=" + encodeURIComponent(fileName2) + "&subTab=" + idx;
+}
+function resizeEntitiesTab(tab) {
+var p = $('#detailsFrame', parent.document);
+if (p.length == 0) p = $(window);
+$('.DetailsBody').each(function() { $(this).height(p.height() - $('#form1').height() - $('#TAB0').height());})
+EntityDivClick(tab);
+var g = $("#jqgridlist" + tab);
+if (g.length && g[0].grid) { resizeGrid(tab); } 
+}
+function resizeGrid(tab) {
+var $grid = $("#jqgridlist" + tab);
+newWidth = $("#EDI" + tab).width() - 1;
+$grid.jqGrid("setGridWidth", newWidth, true);
+newHeight = $("#EDI" + tab).height() - 54;
+$grid.jqGrid("setGridHeight", newHeight, true);
+}
+window.onload = function() {resizeEntitiesTab(activeTab)};
+$(window).resize(function() {
+resizeEntitiesTab(activeTab);
+})
+$(document).ready(function(){
+$('[data-toggle="tooltip"]').tooltip();
+});
+</script> 
+     <link href="css/UTRework.css" rel="stylesheet" type="text/css">
+     <table style="margin:10px 0px;">
+      <tbody>
+       <tr class="ColumnRow"> 
+        <td id="detailTitle" class="detailsHeaderBackgroundRect details1Text">Well Information</td>
+        <td class="ColumnName header3Text" style="font-weight:bold;">API</td> 
+        <td class="ColumnValue ">43-007-30520</td> 
+        <td class="ColumnName header3Text" style="font-weight:bold;">Well File</td> 
+        <td class="ColumnValue "><a href="api/Files?fileName=wellfile|8501">View</a></td> 
+        <td class="ColumnName header3Text" style="font-weight:bold;">UIC Permit</td> 
+        <td class="ColumnValue "><a href="javascript:parent.FillED('PKey',449,'INTEGER','PermitUICDetails.xml','ctl00_PageBody_WebPartManager1_gwpPanelDetails_DetailsFrame');">UIC-245.1</a></td> 
+        <td class="ColumnName header3Text" style="font-weight:bold;">Name</td> 
+        <td class="ColumnValue ">RGC D10</td> 
+        <td class="ColumnName header3Text" style="font-weight:bold;">Operator</td> 
+        <td class="ColumnValue "><a href="javascript:parent.FillED('PKey',100502,'INTEGER','EntityDetails.xml','ctl00_PageBody_WebPartManager1_gwpPanelDetails_DetailsFrame');">ConocoPhillips Company</a></td> 
+        <td class="ColumnName header3Text" style="font-weight:bold;">Type</td> 
+        <td class="ColumnValue ">Water Disposal Well</td> 
+        <td class="ColumnName header3Text" style="font-weight:bold;">Status</td> 
+        <td class="ColumnValue ">Active</td> 
+        <td class="ColumnName header3Text" style="font-weight:bold;"> </td> 
+        <td class="ColumnValue "><b>Wellbore</b> <a href="WellBore.html?constructKey=791&amp;showHeader=true" target="_blank">View</a></td> 
+       </tr>
+      </tbody>
+     </table> <!-- END HEADER --> 
+     <div style="width:100%; box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.24);">
+      <!-- TAB HEADER DIVS --> 
+      <table style="width:100%">
+       <tbody>
+        <tr> 
+         <td> 
+          <div class="ActiveTab" onclick="javascript:EntityDivClick(0);" id="TAB0">
+           <a class="headerLink" href="javascript:EntityDivClick(0);">General</a>
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(1);" id="TAB1">
+           <a class="headerLink" href="javascript:EntityDivClick(1);">Surface Location</a>
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(2);" id="TAB2">
+           <a class="headerLink" href="javascript:EntityDivClick(2);">Construction<span id="resultmsg2">(1)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(2,'WellInformation_43-007-30520_Construction.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(3);" id="TAB3">
+           <a class="headerLink" href="javascript:EntityDivClick(3);">Permits<span id="resultmsg3">(1)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(3,'WellInformation_43-007-30520_Permits.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(4);" id="TAB4">
+           <a class="headerLink" href="javascript:EntityDivClick(4);">Production<span id="resultmsg4">(0)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(4,'WellInformation_43-007-30520_Production.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(5);" id="TAB5">
+           <a class="headerLink" href="javascript:EntityDivClick(5);">Production Entities<span id="resultmsg5">(1)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(5,'WellInformation_43-007-30520_ProductionEntities.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(6);" id="TAB6">
+           <a class="headerLink" href="javascript:EntityDivClick(6);">Groups<span id="resultmsg6">(0)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(6,'WellInformation_43-007-30520_Groups.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(7);" id="TAB7">
+           <a class="headerLink" href="javascript:EntityDivClick(7);">Dates<span id="resultmsg7">(6)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(7,'WellInformation_43-007-30520_Dates.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(8);" id="TAB8">
+           <a class="headerLink" href="javascript:EntityDivClick(8);">Incidents<span id="resultmsg8">(1)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(8,'WellInformation_43-007-30520_Incidents.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(9);" id="TAB9">
+           <a class="headerLink" href="javascript:EntityDivClick(9);">APDs<span id="resultmsg9">(1)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(9,'WellInformation_43-007-30520_APDs.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+         <td> 
+          <div class="InactiveTab" onclick="javascript:EntityDivClick(10);" id="TAB10">
+           <a class="headerLink" href="javascript:EntityDivClick(10);">Well History<span id="resultmsg10">(10)</span></a>
+           <img src="images/assets/exportCSVIcon.png" style="cursor:pointer;margin-left:5px;" onclick="javascript:ExportTableToCSV(10,'WellInformation_43-007-30520_WellHistory.csv')" data-toggle="tooltip" data-placement="top" title="CSV Export">
+          </div></td> 
+        </tr> <!-- TAB DIVS --> 
+        <tr>
+         <td colspan="11"> <!-- TAB DIV General --> 
+          <div class="DetailsBody" style=" visibility: Visible" id="EDI0"> <!-- QUERY General --> 
+           <table style="max-width:100%; margin-top:2px;"> 
+            <tbody>
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Surface Owner</td> 
+              <td class="ColumnValue ">Fee</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Confidential</td> 
+              <td class="ColumnValue ">No</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Tribe</td> 
+              <td class="ColumnValue ">&nbsp;</td> 
+             </tr> 
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Unit/EOR Group</td> 
+              <td class="ColumnValue ">&nbsp;</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Wildcat Approved</td> 
+              <td class="ColumnValue ">No</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Commingle Approved</td> 
+              <td class="ColumnValue ">No</td> 
+             </tr> 
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Cumulative Oil Production</td> 
+              <td class="ColumnValue ">0</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Cumulative Gas Production</td> 
+              <td class="ColumnValue ">0</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Cumulative Water Production</td> 
+              <td class="ColumnValue ">0</td> 
+             </tr> 
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Cumulative Gas Injection</td> 
+              <td class="ColumnValue ">&nbsp;</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Cumulative Liquid Injection</td> 
+              <td class="ColumnValue ">42328494</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Spacing Order</td> 
+              <td class="ColumnValue "><a href="javascript:parent.FillED('PKey',845,'INTEGER','DocketDetails.xml','ctl00_PageBody_WebPartManager1_gwpPanelDetails_DetailsFrame');">Cause Number: 243-01</a></td> 
+             </tr> 
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Original Field Type</td> 
+              <td class="ColumnValue ">Development</td> 
+              <td class="ColumnName">&nbsp;</td> 
+              <td class="ColumnValue">&nbsp;</td> 
+              <td class="ColumnName">&nbsp;</td> 
+              <td class="ColumnValue">&nbsp;</td> 
+             </tr> 
+            </tbody>
+           </table> <!-- END QUERY General --> 
+          </div> <!-- END TAB DIV General --> <!-- TAB DIV Surface Location --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI1"> <!-- QUERY Surface Location --> 
+           <table style="max-width:100%; margin-top:2px;"> 
+            <tbody>
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Section</td> 
+              <td class="ColumnValue "><a href="javascript:parent.FillED('PKey','15S 09E 28','STRING','SecDetails.xml','ctl00_PageBody_WebPartManager1_gwpPanelDetails_DetailsFrame');">28</a></td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">TWP</td> 
+              <td class="ColumnValue "><a href="javascript:parent.FillED('PKey','15S 09E','STRING','TownshipDetails.xml','ctl00_PageBody_WebPartManager1_gwpPanelDetails_DetailsFrame');">15S</a></td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">RNG</td> 
+              <td class="ColumnValue ">09E</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">QQ</td> 
+              <td class="ColumnValue ">Northwest of Northeast</td> 
+             </tr> 
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">NS Feet</td> 
+              <td class="ColumnValue ">162</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">From N/S</td> 
+              <td class="ColumnValue ">N</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">EW Feet</td> 
+              <td class="ColumnValue ">1557</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">From E/W</td> 
+              <td class="ColumnValue ">E</td> 
+             </tr> 
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Latitude</td> 
+              <td class="ColumnValue ">39.498162</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Longitude</td> 
+              <td class="ColumnValue ">-110.915168</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">UTM Easting</td> 
+              <td class="ColumnValue ">507294</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">UTM Northing</td> 
+              <td class="ColumnValue ">4372064</td> 
+             </tr> 
+             <tr class="ColumnRow"> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">UTM Zone</td> 
+              <td class="ColumnValue ">Zone 12</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Indian Country</td> 
+              <td class="ColumnValue ">No</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">Meridian</td> 
+              <td class="ColumnValue ">Salt Lake Principal Meridian</td> 
+              <td class="ColumnName header3Text" style="font-weight:bold;">County</td> 
+              <td class="ColumnValue "><a href="javascript:parent.FillED('PKey',4,'INTEGER','CountyDetails.xml','ctl00_PageBody_WebPartManager1_gwpPanelDetails_DetailsFrame');">CARBON</a></td> 
+             </tr> 
+            </tbody>
+           </table> <!-- END QUERY Surface Location --> 
+          </div> <!-- END TAB DIV Surface Location --> <!-- TAB DIV Construction --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI2"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist2"></table>
+           <div id="pjqgridlist2"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV Construction --> <!-- TAB DIV Permits --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI3"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist3"></table>
+           <div id="pjqgridlist3"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV Permits --> <!-- TAB DIV Production --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI4"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist4"></table>
+           <div id="pjqgridlist4"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV Production --> <!-- TAB DIV Production Entities --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI5"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist5"></table>
+           <div id="pjqgridlist5"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV Production Entities --> <!-- TAB DIV Groups --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI6"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist6"></table>
+           <div id="pjqgridlist6"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV Groups --> <!-- TAB DIV Dates --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI7"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist7"></table>
+           <div id="pjqgridlist7"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV Dates --> <!-- TAB DIV Incidents --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI8"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist8"></table>
+           <div id="pjqgridlist8"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV Incidents --> <!-- TAB DIV APDs --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI9"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist9"></table>
+           <div id="pjqgridlist9"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV APDs --> <!-- TAB DIV Well History --> 
+          <div class="DetailsBody" style=" visibility:hidden" id="EDI10"> <!-- RELATED QUERY  --> 
+           <table id="jqgridlist10"></table>
+           <div id="pjqgridlist10"></div> <!-- END RELATED QUERY  --> 
+          </div> <!-- END TAB DIV Well History --> </td>
+        </tr> 
+       </tbody>
+      </table> 
+     </div> </span> 
+   </div> 
+  </form>  
+ </body>
+</html>

@@ -48,8 +48,8 @@ public class BoreholeService {
         return boreholeDao.findById(API);
     }
 
-    public int insert(int first, int end) throws IOException {
-        for (int i=first; i<=end;i++){
+    public int insert(long first, long end) throws IOException {
+        for (long i=first; i<=end;i++){
             String key=String.valueOf(i);
 
             String html=null;

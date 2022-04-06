@@ -1,5 +1,6 @@
 package com.example.CUSP_DB.util;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -53,6 +54,7 @@ public class HttpParse {
         if (wellName!=null) {
             borehole.setWellName(wellName);
         }
+        //System.out.println(wellName);
         //Operator: 5-4
         String operator=elements.get(4).text();
         if(operator!=null) {
@@ -66,7 +68,14 @@ public class HttpParse {
         //WellType: gas well: GW; Water Disposal well: WD:6-5
         String wellType=elements.get(5).text();
         if(wellType!=null) {
-            borehole.setWellType(wellType.charAt(0) + "W");
+            borehole.setWellType(wellType + "W");
+        }
+
+        //well status
+        String wellStatuses=elements.get(6).text();
+        if(wellStatuses!=null) {
+            String wellStatus=wellStatuses;
+            borehole.setWellStatus(wellStatus);
         }
 
         //Surface Owner: 9-8
@@ -74,6 +83,7 @@ public class HttpParse {
         if (surfaceOwner!=null) {
             borehole.setSurfaceOwner(surfaceOwner);
         }
+        //System.out.println("surfaceOwner");
         //Confidential: 10-9
         String confidential=elements.get(9).text();
         if(confidential!=null) {
@@ -120,21 +130,22 @@ public class HttpParse {
         String twp=elements.get(24).text();
         if(twp!=null) {
             borehole.setTownship(Integer.valueOf(twp.substring(0, twp.length() - 1)));
-            borehole.setTownshipDir(twp.charAt(twp.length() - 1));
+            borehole.setTownshipDir(twp);
         }
         //range and direction: 26-25
         String rng=elements.get(25).text();
         if (rng!=null) {
             borehole.setRange(Integer.valueOf(rng.substring(0, rng.length() - 1)));
-            borehole.setRangeDir(rng.charAt(rng.length() - 1));
+            borehole.setRangeDir(rng);
         }
         //qtrqtr:27-26
         //Southeast of Northwest=>SENW
         String qq=elements.get(26).text();
         if(qq!=null) {
-            String qtr = ("" + qq.charAt(0) + qq.charAt(5) + qq.charAt(13) + qq.charAt(18)).toUpperCase(Locale.ROOT);
+            String qtr = ("" + qq + qq.charAt(5) + qq.charAt(13) + qq.charAt(18)).toUpperCase(Locale.ROOT);
             borehole.setQtrQtr(qtr);
         }
+        //System.out.println(qq);
         //NS feet: 28-27
         String nsFeet=elements.get(27).text();
         if(nsFeet!=null) {
@@ -183,42 +194,15 @@ public class HttpParse {
         //set Meridian: 38-37
         String meridian=elements.get(37).text();
         if(meridian!=null) {
-            borehole.setMeridian(meridian.charAt(0));
+            borehole.setMeridian(meridian);
         }
         //set county:39-38
         String county=elements.get(38).text();
         if(county!=null) {
             borehole.setCounty(county);
         }
-        Elements elements2=doc.select("tr[class=RelatedTableRow]");
-        //direction
-        String directions=elements2.get(0).select("td").get(2).text();
-        if(directions!=null) {
-            Character direction=directions.charAt(0);
-            if (direction.equals("V")) {
-                borehole.setDirVert('Y');
-                borehole.setDirHoriz('N');
-            } else {
-                borehole.setDirVert('N');
-                borehole.setDirHoriz('Y');
-            }
-        }
-        //well status
-        String wellStatuses=elements2.get(0).select("td").get(4).text();
-        if(wellStatuses!=null) {
-            Character wellStatus=wellStatuses.charAt(0);
-            borehole.setWellStatus(wellStatus);
-        }
-        //lease type
-        String leaseType=elements2.get(0).select("td").get(5).text();
-        if(leaseType!=null) {
-            borehole.setLeaseType(leaseType);
-        }
-        //lease number
-        String leaseNumber=elements2.get(0).select("td").get(6).text();
-        if(leaseNumber!=null) {
-            borehole.setLeaseNumber(leaseNumber);
-        }
+
+        System.out.println("Borehole built successfully!");
 
         return borehole;
 

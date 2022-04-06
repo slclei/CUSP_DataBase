@@ -170,23 +170,23 @@ public class readExcel {
             result.setTownship(Integer.parseInt(thisRow[nameNo.get("township")]));
         }
          //   TownshipDir = townshipDir;
-        result.setTownshipDir((thisRow[nameNo.get("townshipdir")].charAt(0)));
+        result.setTownshipDir((thisRow[nameNo.get("townshipdir")]));
          //   Range = range;
         if(nameNo.get("range")!=null) {
             result.setRange(Integer.parseInt(thisRow[nameNo.get("range")]));
         }
          //   RangeDir = rangeDir;
-        result.setRangeDir((thisRow[nameNo.get("rangedir")].charAt(0)));
+        result.setRangeDir((thisRow[nameNo.get("rangedir")]));
          //   Meridian = meridian;
-        result.setMeridian((thisRow[nameNo.get("meridian")].charAt(0)));
+        result.setMeridian((thisRow[nameNo.get("meridian")]));
         //    County = county;
         result.setCounty((thisRow[nameNo.get("county")]));
          //   DirHoriz = dirHoriz;
-        result.setDirHoriz((thisRow[nameNo.get("dirhoriz")].charAt(0)));
+        result.setDirHoriz((thisRow[nameNo.get("dirhoriz")]));
          //   DirVert = dirVert;
-        result.setDirVert((thisRow[nameNo.get("dirvert")].charAt(0)));
+        result.setDirVert((thisRow[nameNo.get("dirvert")]));
          //   DirDirect = dirDirect;
-        result.setDirDirect((thisRow[nameNo.get("dirdirect")].charAt(0)));
+        result.setDirDirect((thisRow[nameNo.get("dirdirect")]));
          //   SurfaceOwner = surfaceOwner;
         result.setSurfaceOwner((thisRow[nameNo.get("surfaceowner")]));
          //   IndianTribe = indianTribe;
@@ -208,7 +208,7 @@ public class readExcel {
             result.setAbandonDate(new SimpleDateFormat("dd/MM/yyyy").parse(thisRow[nameNo.get("abandondate")]));
         }
         //    WellStatus = wellStatus;
-        result.setWellStatus(thisRow[nameNo.get("wellstatus")].charAt(0));
+        result.setWellStatus(thisRow[nameNo.get("wellstatus")]);
         //    WellType = wellType;
         result.setWellType(thisRow[nameNo.get("welltype")]);
         //    TotCumOil = totCumOil;

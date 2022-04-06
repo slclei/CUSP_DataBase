@@ -56,7 +56,7 @@ public class BoreholeController {
 
     @RequestMapping("/insert")
     @PostMapping()
-    public ResponseEntity<String> insertBorehole(@RequestParam int first, @RequestParam int end){
+    public ResponseEntity<String> insertBorehole(@RequestParam long first, @RequestParam long end){
         try{
             System.out.println("before insert in controller");
             boreholeService.insert(first,end);

@@ -72,28 +72,28 @@ public class Borehole {
     private Integer Township;
 
     @Column(name="TownshipDirection")
-    private Character TownshipDir;
+    private String TownshipDir;
 
     @Column(name="RangeCOl")
     private Integer Range;
 
     @Column(name="RangeDirection")
-    private Character RangeDir;
+    private String RangeDir;
 
     @Column(name="Meridian")
-    private Character Meridian;
+    private String Meridian;
 
     @Column(name="County")
     private String County;
 
     @Column(name="DirHoriz")
-    private Character DirHoriz;
+    private String DirHoriz;
 
     @Column(name="DirVert")
-    private Character DirVert;
+    private String DirVert;
 
     @Column(name="DirDirect")
-    private Character DirDirect;
+    private String DirDirect;
 
     @Column(name="SurfaceOwner")
     private String SurfaceOwner;
@@ -118,7 +118,7 @@ public class Borehole {
     private Date AbandonDate;
 
     @Column(name="WellStatus")
-    private Character WellStatus;
+    private String WellStatus;
 
     @Column(name="WellType")
     private String WellType;
@@ -198,7 +198,7 @@ public class Borehole {
         WellName = wellName;
     }
 
-    public Borehole(Long API, String wellName, String operator, Long operatorNo, String fieldName, Long groundElev, Long kellyElev, Long drkFloorElev, Float latitude, Float longitude, Long coordsSurfN, Long coordsSurfE, Integer UTM, Long footageNS, String dirNS, Long footageEW, String dirEW, String qtrQtr, Integer section, Integer township, Character townshipDir, Integer range, Character rangeDir, Character meridian, String county, Character dirHoriz, Character dirVert, Character dirDirect, String surfaceOwner, String indianTribe, String confidential, Date confRelDate, String leaseNumber, String leaseType, Date abandonDate, Character wellStatus, String wellType, Long totCumOil, Long totCumGas, Long totCumWater, Long multiLats, String origianlField, String unitName, String GISStatusType, Date origComplDate, String jurisdiction, Long TDSNavajo, Long TDSWingate, Long reportsID, Long formationTopDepths, Long thickness, String netSand, String netPay, String extent) {
+    public Borehole(Long API, String wellName, String operator, Long operatorNo, String fieldName, Long groundElev, Long kellyElev, Long drkFloorElev, Float latitude, Float longitude, Long coordsSurfN, Long coordsSurfE, Integer UTM, Long footageNS, String dirNS, Long footageEW, String dirEW, String qtrQtr, Integer section, Integer township, String townshipDir, Integer range, String rangeDir, String meridian, String county, String dirHoriz, String dirVert, String dirDirect, String surfaceOwner, String indianTribe, String confidential, Date confRelDate, String leaseNumber, String leaseType, Date abandonDate, String wellStatus, String wellType, Long totCumOil, Long totCumGas, Long totCumWater, Long multiLats, String origianlField, String unitName, String GISStatusType, Date origComplDate, String jurisdiction, Long TDSNavajo, Long TDSWingate, Long reportsID, Long formationTopDepths, Long thickness, String netSand, String netPay, String extent) {
         this.API = API;
         WellName = wellName;
         Operator = operator;
@@ -343,7 +343,7 @@ public class Borehole {
         return Township;
     }
 
-    public Character getTownshipDir() {
+    public String getTownshipDir() {
         return TownshipDir;
     }
 
@@ -351,11 +351,11 @@ public class Borehole {
         return Range;
     }
 
-    public Character getRangeDir() {
+    public String getRangeDir() {
         return RangeDir;
     }
 
-    public Character getMeridian() {
+    public String getMeridian() {
         return Meridian;
     }
 
@@ -363,15 +363,15 @@ public class Borehole {
         return County;
     }
 
-    public Character getDirHoriz() {
+    public String getDirHoriz() {
         return DirHoriz;
     }
 
-    public Character getDirVert() {
+    public String getDirVert() {
         return DirVert;
     }
 
-    public Character getDirDirect() {
+    public String getDirDirect() {
         return DirDirect;
     }
 
@@ -403,7 +403,7 @@ public class Borehole {
         return AbandonDate;
     }
 
-    public Character getWellStatus() {
+    public String getWellStatus() {
         return WellStatus;
     }
 
@@ -551,7 +551,7 @@ public class Borehole {
         Township = township;
     }
 
-    public void setTownshipDir(Character townshipDir) {
+    public void setTownshipDir(String townshipDir) {
         TownshipDir = townshipDir;
     }
 
@@ -559,27 +559,27 @@ public class Borehole {
         Range = range;
     }
 
-    public void setRangeDir(Character rangeDir) {
+    public void setRangeDir(String rangeDir) {
         RangeDir = rangeDir;
     }
 
-    public void setMeridian(Character meridian) {
-        Meridian = meridian;
+    public void setMeridian(String meridian) {
+        Meridian = Character.toString(meridian.charAt(0));
     }
 
     public void setCounty(String county) {
         County = county;
     }
 
-    public void setDirHoriz(Character dirHoriz) {
+    public void setDirHoriz(String dirHoriz) {
         DirHoriz = dirHoriz;
     }
 
-    public void setDirVert(Character dirVert) {
+    public void setDirVert(String dirVert) {
         DirVert = dirVert;
     }
 
-    public void setDirDirect(Character dirDirect) {
+    public void setDirDirect(String dirDirect) {
         DirDirect = dirDirect;
     }
 
@@ -611,7 +611,7 @@ public class Borehole {
         AbandonDate = abandonDate;
     }
 
-    public void setWellStatus(Character wellStatus) {
+    public void setWellStatus(String wellStatus) {
         WellStatus = wellStatus;
     }
 
