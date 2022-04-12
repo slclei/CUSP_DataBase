@@ -7,31 +7,31 @@ import java.util.PrimitiveIterator;
 //This is entity for Borehole data information
 //key is API
 @Entity
-@Table(name="Borehole")
+@Table(name="wellsut")
 public class Borehole {
     @Id
     @Column(name="API")
     private Long API;
 
-    @Column(name="WellName")
+    @Column(name="Wellname")
     private String WellName;
 
     @Column(name="Operator")
     private String Operator;
 
-    @Column(name="OperatorNo")
+    @Column(name="Operatorno")
     private Long OperatorNo;
 
-    @Column(name="FieldName")
+    @Column(name="Fieldname")
     private String FieldName;
 
-    @Column(name="GroundElevation")
+    @Column(name="Ground_ele")
     private Long GroundElev;
 
-    @Column(name="KellyElevation")
+    @Column(name="Kelly_elev")
     private Long KellyElev;
 
-    @Column(name="DrkFloorElevation")
+    @Column(name="Drkfloor_e")
     private Long DrkFloorElev;
 
     @Column(name="Latitude")
@@ -41,28 +41,28 @@ public class Borehole {
     private Float Longitude;
 
     //TODO followings are belonged to map?
-    @Column(name="CoordsSurfN")
+    @Column(name="Coordssurf")
     private Long CoordsSurfN;
 
-    @Column(name="CoordsSurfE")
+    @Column(name="Coordssu_1")
     private Long CoordsSurfE;
 
     @Column(name="UTMZone")
     private Integer UTM;
 
-    @Column(name="FootageNS")
+    @Column(name="Footagens")
     private Long FootageNS;
 
-    @Column(name="DirNS")
+    @Column(name="Dir_ns")
     private String DirNS;
 
-    @Column(name="FootageEW")
+    @Column(name="Footageew")
     private Long FootageEW;
 
-    @Column(name="DirEW")
+    @Column(name="Dir_ew")
     private String DirEW;
 
-    @Column(name="QtrQtr")
+    @Column(name="Qtrqtr")
     private String QtrQtr;
 
     @Column(name="Section")
@@ -71,13 +71,13 @@ public class Borehole {
     @Column(name="Township")
     private Integer Township;
 
-    @Column(name="TownshipDirection")
+    @Column(name="Townshipdi")
     private String TownshipDir;
 
-    @Column(name="RangeCOl")
+    @Column(name="Range")
     private Integer Range;
 
-    @Column(name="RangeDirection")
+    @Column(name="Rangedir")
     private String RangeDir;
 
     @Column(name="Meridian")
@@ -86,70 +86,70 @@ public class Borehole {
     @Column(name="County")
     private String County;
 
-    @Column(name="DirHoriz")
+    @Column(name="Dir_horiz")
     private String DirHoriz;
 
-    @Column(name="DirVert")
+    @Column(name="Dir_vert")
     private String DirVert;
 
-    @Column(name="DirDirect")
+    @Column(name="Dir_direct")
     private String DirDirect;
 
-    @Column(name="SurfaceOwner")
+    @Column(name="Surfaceown")
     private String SurfaceOwner;
 
-    @Column(name="IndianTribe")
+    @Column(name="Indiantrib")
     private String IndianTribe;
     //TODO Above are location information
 
-    @Column(name="Confidential")
+    @Column(name="Confidenti")
     private String Confidential;
 
-    @Column(name="ConfRelDate")
+    @Column(name="Confreldat")
     private Date ConfRelDate;
 
-    @Column(name="LeaseNumber")
+    @Column(name="Leasenumbe")
     private String LeaseNumber;
 
-    @Column(name="LeaseType")
+    @Column(name="Leasetype")
     private String LeaseType;
 
-    @Column(name="AbandonDate")
+    @Column(name="Abandondat")
     private Date AbandonDate;
 
-    @Column(name="WellStatus")
+    @Column(name="Wellstatus")
     private String WellStatus;
 
-    @Column(name="WellType")
+    @Column(name="Welltype")
     private String WellType;
 
     //TODO below are Production and injection volumes?
-    @Column(name="TotCumOil")
+    @Column(name="Totcum_oil")
     private Long TotCumOil;
 
-    @Column(name="TotCumGas")
+    @Column(name="Totcum_gas")
     private Long TotCumGas;
 
-    @Column(name="TotCumWater")
+    @Column(name="Totcum_wat")
     private Long TotCumWater;
     //TODO above are Production and injection volumes?
 
-    @Column(name="MultiLats")
+    @Column(name="Multi_lats")
     private Long MultiLats;
 
-    @Column(name="OriginalField")
+    @Column(name="Originalfi")
     private String OrigianlField;
 
-    @Column(name="UnitName")
+    @Column(name="Unitname")
     private String UnitName;
 
-    @Column(name="GISStatusType")
+    @Column(name="GISStatust")
     private String GISStatusType;
 
-    @Column(name="OrigComplDate")
+    @Column(name="Origcompld")
     private Date OrigComplDate;
 
-    @Column(name="Jurisdiction")
+    @Column(name="Jurisdicti")
     private String Jurisdiction;
 
     //TODO TDS belongs to Groundwater? One well has one groundwater data?
@@ -161,19 +161,19 @@ public class Borehole {
 
     //TODO below are listed in CUSP data workflow and types, but not in ConocoPhilips
     //Foreign Key linked to well reports
-    @Column(name="ReportsID")
+    @Column(name="Reportsid")
     private Long ReportsID;
 
-    @Column(name="FormationTopDepths")
+    @Column(name="Formationtopdepths")
     private Long FormationTopDepths;
 
     @Column(name="Thickness")
     private Long Thickness;
 
-    @Column(name="NetSand")
+    @Column(name="Netsand")
     private String NetSand;
 
-    @Column(name="NetPay")
+    @Column(name="Netpay")
     private String NetPay;
 
     @Column(name="Extent")
@@ -198,9 +198,9 @@ public class Borehole {
         WellName = wellName;
     }
 
-    public Borehole(Long API, String wellName, String operator, Long operatorNo, String fieldName, Long groundElev, Long kellyElev, Long drkFloorElev, Float latitude, Float longitude, Long coordsSurfN, Long coordsSurfE, Integer UTM, Long footageNS, String dirNS, Long footageEW, String dirEW, String qtrQtr, Integer section, Integer township, String townshipDir, Integer range, String rangeDir, String meridian, String county, String dirHoriz, String dirVert, String dirDirect, String surfaceOwner, String indianTribe, String confidential, Date confRelDate, String leaseNumber, String leaseType, Date abandonDate, String wellStatus, String wellType, Long totCumOil, Long totCumGas, Long totCumWater, Long multiLats, String origianlField, String unitName, String GISStatusType, Date origComplDate, String jurisdiction, Long TDSNavajo, Long TDSWingate, Long reportsID, Long formationTopDepths, Long thickness, String netSand, String netPay, String extent) {
+    public Borehole(Long API, String wellname, String operator, Long operatorNo, String fieldName, Long groundElev, Long kellyElev, Long drkFloorElev, Float latitude, Float longitude, Long coordsSurfN, Long coordsSurfE, Integer UTM, Long footageNS, String dirNS, Long footageEW, String dirEW, String qtrQtr, Integer section, Integer township, String townshipDir, Integer range, String rangeDir, String meridian, String county, String dirHoriz, String dirVert, String dirDirect, String surfaceOwner, String indianTribe, String confidential, Date confRelDate, String leaseNumber, String leaseType, Date abandonDate, String wellStatus, String wellType, Long totCumOil, Long totCumGas, Long totCumWater, Long multiLats, String origianlField, String unitName, String GISStatusType, Date origComplDate, String jurisdiction, Long TDSNavajo, Long TDSWingate, Long reportsID, Long formationTopDepths, Long thickness, String netSand, String netPay, String extent) {
         this.API = API;
-        WellName = wellName;
+        WellName = wellname;
         Operator = operator;
         OperatorNo = operatorNo;
         FieldName = fieldName;
